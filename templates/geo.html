@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+{% extends "layout.html" %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geographic Insights</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>Geographic Insights</h1>
+
+    <div>
+        <label for="state">State:</label>
+        <select id="state">
+            <option value="">Select State</option>
+            {% for state in states %}
+                <option value="{{ state }}">{{ state }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div>
+        <label for="county">County:</label>
+        <select id="county">
+            <option value="">Select County</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="provider">Provider:</label>
+        <select id="provider">
+            <option value="">Select Provider</option>
+        </select>
+    </div>
+
+    <div>
+        <h3>Visualizations:</h3>
+        <div id="visualization">
+            <!-- Heatmap and bar chart will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        // Handle state change and update counties dropdown
+        $('#state').on('change', function() {
+            var state = $(this).val();
+            updateCounties(state);
+        });
+
+        // Handle county change and update providers dropdown
+        $('#county').on('change', function() {
+            var state = $('#state').val();
+            var county = $(this).val();
+            updateProviders(state, county);
+        });
+
+        // Update counties dropdown based on selected state
+        function updateCounties(state) {
+            $.ajax({
+                url: '/get_counties',
+                data: { state: state },
+                success: function(response) {
+                    $('#county').html(response.counties);
+                    $('#provider').html('<option value="">Select Provider</option>');  // Reset provider
+                    updateChart(state);  // Update chart with selected state
+                }
+            });
+        }
+
+        // Update providers dropdown based on selected state and county
+        function updateProviders(state, county) {
+            $.ajax({
+                url: '/get_providers',
+                data: { state: state, county: county },
+                success: function(response) {
+                    $('#provider').html(response.providers);
+                    updateChart(state, county);  // Update chart with selected state and county
+                }
+            });
+        }
+
+        // Update chart based on selected filters
+        function updateChart(state, county = "", provider = "") {
+            $.ajax({
+                url: '/update_geo_chart',
+                data: { state: state, county: county, provider: provider },
+                success: function(response) {
+                    $('#visualization').html(response.heatmap + response.bar_chart);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

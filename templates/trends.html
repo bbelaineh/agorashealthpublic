@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trends in Staffing</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>Trends in Staffing and Nurse Demand</h1>
+
+    <div>
+        <label for="date_range">Date Range:</label>
+        <select id="date_range">
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+            <option value="daily">Daily</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="nurse_role">Nurse Role:</label>
+        <select id="nurse_role">
+            <option value="Hrs_RN">Registered Nurse (RN)</option>
+            <option value="Hrs_LPN">Licensed Practical Nurse (LPN)</option>
+            <option value="Hrs_CNA">Certified Nursing Assistant (CNA)</option>
+        </select>
+    </div>
+
+    <div>
+        <h3>Visualizations:</h3>
+        <div id="visualizations">
+            <!-- Line chart and scatterplot will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        // Handle changes to the date range and nurse role
+        $('#date_range, #nurse_role').on('change', function() {
+            updateCharts();
+        });
+
+        // Function to update charts based on selected filters
+        function updateCharts() {
+            var dateRange = $('#date_range').val();
+            var nurseRole = $('#nurse_role').val();
+
+            $.ajax({
+                url: '/update_trends_chart',
+                data: { date_range: dateRange, nurse_role: nurseRole },
+                success: function(response) {
+                    $('#visualizations').html(response.line_chart + response.scatter_plot);
+                }
+            });
+        }
+
+        // Initial chart load
+        updateCharts();
+    </script>
+</body>
+</html>

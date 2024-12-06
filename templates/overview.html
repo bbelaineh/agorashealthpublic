@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overview - Nurse Staffing</title>
+</head>
+<body>
+    <h1>Overview of Nurse Staffing</h1>
+    
+    <div>
+        <h2>Total Nurse Hours Worked</h2>
+        <p>{{ total_hours }} Hours</p>
+    </div>
+
+    <div>
+        <h2>Total Number of Facilities</h2>
+        <p>{{ total_facilities }} Facilities</p>
+    </div>
+
+    <div>
+        <h2>Average Nurse-to-Patient Ratio</h2>
+        <p>{{ avg_nurse_patient_ratio }}</p>
+    </div>
+
+    <div>
+        <h2>Average Nurse-to-Patient Ratio by State</h2>
+        <div>{{ choropleth_html|safe }}</div>
+    </div>
+
+    <div>
+        <h2>Top 10 States by Total Hours Worked</h2>
+        <div>{{ bar_chart_html|safe }}</div>
+    </div>
+</body>
+</html>

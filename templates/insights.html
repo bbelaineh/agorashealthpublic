@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insights</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>Insights Tab</h1>
+    <div>
+        <label for="states">Select States:</label>
+        <select id="states" multiple>
+            <!-- Dropdown options populated dynamically -->
+        </select>
+
+        <label for="counties">Select Counties:</label>
+        <select id="counties" multiple>
+            <!-- Dropdown options populated dynamically -->
+        </select>
+
+        <label for="providers">Select Providers:</label>
+        <select id="providers" multiple>
+            <!-- Dropdown options populated dynamically -->
+        </select>
+
+        <button onclick="updateInsights()">Update Insights</button>
+    </div>
+
+    <div>
+        <h3>Visualizations:</h3>
+        <div id="bar_chart"></div>
+        <div id="comparison_chart"></div>
+    </div>
+
+    <!-- Embedded JavaScript -->
+    <script>
+        // Populate dropdowns with filter options
+        $(document).ready(function() {
+            $.ajax({
+                url: '/get_filter_options',
+                success: function(response) {
+                    response.states.forEach(state => $('#states').append(new Option(state, state)));
+                    response.counties.forEach(county => $('#counties').append(new Option(county, county)));
+                    response.providers.forEach(provider => $('#providers').append(new Option(provider, provider)));
+                }
+            });
+        });
+
+        // Function to dynamically update insights
+        function updateInsights() {
+            var selectedStates = $('#states').val();
+            var selectedCounties = $('#counties').val();
+            var selectedProviders = $('#providers').val();
+
+            $.ajax({
+                url: '/update_insights',
+                data: {
+                    states: selectedStates,
+                    counties: selectedCounties,
+                    providers: selectedProviders
+                },
+                success: function(response) {
+                    $('#bar_chart').html(response.bar_chart);
+                    $('#comparison_chart').html(response.comparison_chart);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
